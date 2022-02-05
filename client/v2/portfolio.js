@@ -109,16 +109,27 @@ const render = (products, pagination) => {
 /**
  * Select the number of products to display
  */
-selectShow.addEventListener('change', async (event) => {
-  const products = await fetchProducts(currentPagination.currentPage, parseInt(event.target.value));
+ selectShow.addEventListener('change', async(event) => {
+     var products =await fetchProducts(1, parseInt(event.target.value))
+     setCurrentProducts(products)
+      render(currentProducts, currentPagination);
 
-  setCurrentProducts(products);
-  render(currentProducts, currentPagination);
-});
+  });
+  document.addEventListener('DOMContentLoaded', async () => {
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const products = await fetchProducts();
+    const products = await fetchProducts();
 
-  setCurrentProducts(products);
-  render(currentProducts, currentPagination);
-});
+    setCurrentProducts(products);
+    render(currentProducts, currentPagination);
+  });
+
+  /**
+   * Browse pages
+   */
+
+     selectPage.addEventListener('change', async(event) => {
+
+       var products = await   fetchProducts(parseInt(event.target.value),currentPagination.pageCount)
+       setCurrentProducts(products)
+         render(currentProducts, currentPagination)
+     });
