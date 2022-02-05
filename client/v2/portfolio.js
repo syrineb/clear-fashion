@@ -14,7 +14,11 @@ const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
 const selectFilter=document.querySelector('#filter-select')
 const selectSort=document.querySelector('#sort-select')
-
+const spanNewProducts = document.querySelector('#nbNewProducts');
+const spanp50 = document.querySelector('#p50');
+const spanp90 = document.querySelector('#p90');
+const spanp95 = document.querySelector('#p95');
+selectSort.innerHTML="<option value='choose' selected> Choose here</option>"+selectSort.innerHTML
 /**
  * Set global value
  * @param {Array} result - products to display
@@ -74,6 +78,23 @@ const renderProducts = products => {
   sectionProducts.innerHTML = '<h2>Products</h2>';
   sectionProducts.appendChild(fragment);
 };
+/**
+*Percentiles
+*/
+function percentiles(products,p){
+  products.sort(function(x,y){return x.price-y.price})
+
+  return products[Math.floor(p*139/100)].price
+}
+
+const renderPercentile = async (pagination) => {
+  const products = await fetch(  `https://clear-fashion-api.vercel.app?page=${1}&size=${139}`);
+  const body= await products.json()
+
+    spanp50.innerHTML=percentiles(body.data.result,50)
+    spanp90.innerHTML=percentiles(body.data.result,90)
+    spanp95.innerHTML=percentiles(body.data.result,95)
+};
 
 /**
  * Render page selector
@@ -116,6 +137,7 @@ const render = (products, pagination) => {
   renderPagination(pagination);
   renderIndicators(pagination);
   renderBrand(all_brand)
+  renderPercentile(pagination)
 };
 
 /**
