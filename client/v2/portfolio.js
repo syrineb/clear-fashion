@@ -18,6 +18,7 @@ const spanNewProducts = document.querySelector('#nbNewProducts');
 const spanp50 = document.querySelector('#p50');
 const spanp90 = document.querySelector('#p90');
 const spanp95 = document.querySelector('#p95');
+const spanLastRelease=document.querySelector('#last-release');
 selectSort.innerHTML="<option value='choose' selected> Choose here</option>"+selectSort.innerHTML
 /**
  * Set global value
@@ -142,6 +143,18 @@ const renderIndicators = pagination => {
   spanNbProducts.innerHTML = count;
 };
 
+
+/**
+ * Render last release date
+ * @param  {Object} pagination
+ */
+const renderLastReleaseDate =async(pagination) => {
+  const products = await fetchProducts(1,139);
+  products.result = sortByDate(products.result)
+  spanLastRelease.innerHTML = String(products.result[products.result.length-1].released);
+};
+
+
 const render = (products, pagination) => {
   renderProducts(products);
   renderPagination(pagination);
@@ -149,6 +162,7 @@ const render = (products, pagination) => {
   renderBrand(all_brand)
   renderPercentile(pagination)
   renderNew(pagination)
+  renderLastReleaseDate(pagination)
 };
 
 /**
