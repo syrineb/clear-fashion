@@ -4,10 +4,12 @@
 // current products on the page
 let currentProducts = [];
 let currentPagination = {};
+let all_brand = ['All','loom','adresse','1083','dedicated','coteleparis']
 
 // instantiate the selectors
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
+const selectBrand = document.querySelector('#brand-select');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
 
@@ -85,7 +87,18 @@ const renderPagination = pagination => {
   selectPage.innerHTML = options;
   selectPage.selectedIndex = currentPage - 1;
 };
+/**
+ * Render brands
+ * @param  {Object} all_brand
+ */
+const renderBrand = all_brand => {
+  const options = Array.from(
+    all_brand,
+    x => `<option value="${x}">${x}</option>`
+  ).join('');
+  selectBrand.innerHTML = options;
 
+};
 /**
  * Render page selector
  * @param  {Object} pagination
@@ -100,6 +113,7 @@ const render = (products, pagination) => {
   renderProducts(products);
   renderPagination(pagination);
   renderIndicators(pagination);
+  renderBrand(all_brand)
 };
 
 /**
@@ -133,3 +147,23 @@ const render = (products, pagination) => {
        setCurrentProducts(products)
          render(currentProducts, currentPagination)
      });
+
+
+     /**
+      * Filter by brands
+      */
+      selectBrand.addEventListener('change', async(event) => {
+
+        if (event.target.value == "All"){
+          const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+          setCurrentProducts(products);
+         }
+     else{
+       const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+       products.result = products.result.filter(product => product.brand == event.target.value);
+       setCurrentProducts(products);
+
+     }
+     render(currentProducts, currentPagination);
+
+      });
