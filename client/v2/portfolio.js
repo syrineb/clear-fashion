@@ -97,6 +97,16 @@ const renderPercentile = async (pagination) => {
 };
 
 /**
+ * Render new products
+ * @param
+ */
+const renderNew = async(pagination) => {
+  const products = await fetchProducts(1,139);
+   products.result =products.result.filter(function(item,idx){return new Date(today).getTime()-new Date(item.released).getTime()<=12096e5});
+   spanNewProducts.innerHTML=products.result.length
+};
+
+/**
  * Render page selector
  * @param  {Object} pagination
  */
@@ -138,6 +148,7 @@ const render = (products, pagination) => {
   renderIndicators(pagination);
   renderBrand(all_brand)
   renderPercentile(pagination)
+  renderNew(pagination)
 };
 
 /**
