@@ -12,6 +12,7 @@ const selectPage = document.querySelector('#page-select');
 const selectBrand = document.querySelector('#brand-select');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
+const selectFilter=document.querySelector('#filter-select')
 
 /**
  * Set global value
@@ -164,6 +165,30 @@ const render = (products, pagination) => {
        setCurrentProducts(products);
 
      }
+
      render(currentProducts, currentPagination);
+
+      });
+      /**
+       * Filter by recent products and reasonable price
+       */
+       var today = new Date();
+       var today = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
+   selectFilter.addEventListener('change', async(event) => {
+       const products = await   fetchProducts(currentPagination.currentPage,currentPagination.pageCount)
+       if(event.target.value=="Recently released"){
+       products.result =products.result.filter(function(item,idx){return new Date(today).getTime()-new Date(item.released).getTime()<=12096e5});
+
+     }
+       else if (event.target.value=="Reasonable price") {
+
+
+         products.result=products.result.filter(function(item,idx){return item.price<=50});
+
+       }
+
+       setCurrentProducts(products)
+       render(currentProducts, currentPagination);
 
       });
