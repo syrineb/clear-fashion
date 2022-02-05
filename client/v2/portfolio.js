@@ -13,6 +13,7 @@ const selectBrand = document.querySelector('#brand-select');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
 const selectFilter=document.querySelector('#filter-select')
+const selectSort=document.querySelector('#sort-select')
 
 /**
  * Set global value
@@ -192,3 +193,39 @@ const render = (products, pagination) => {
        render(currentProducts, currentPagination);
 
       });
+
+
+
+/**
+ *  Sort
+ */
+function sortByPriceAsc(x){
+         return x.sort(function(x1,x2){return x1.price-x2.price})
+       }
+
+ function sortByDate(x){
+         return x.sort(function(x1,x2){return new Date(x2.released)-new Date(x1.released)})
+       }
+
+selectSort.addEventListener('change', async(event) => {
+     var products =    await   fetchProducts(currentPagination.currentPage,currentPagination.pageCount)
+
+       if (event.target.value=="price-asc") {
+        products.result = sortByPriceAsc(products.result)
+
+      }
+      else if (event.target.value=="price-desc") {
+        products.result = sortByPriceAsc(products.result).reverse()
+
+      }
+      else if (event.target.value=="date-asc") {
+        products.result = sortByDate(products.result)
+
+      }
+      else if (event.target.value=="date-desc") {
+        products.result = sortByDate(products.result).reverse()
+
+      }
+      setCurrentProducts(products)
+      render(currentProducts, currentPagination)
+});
