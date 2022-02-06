@@ -4,7 +4,7 @@
 // current products on the page
 let currentProducts = [];
 let currentPagination = {};
-let all_brand = ['All','loom','adresse','1083','dedicated','coteleparis']
+let all_brand = ['All','loom','adresse','1083','dedicated','coteleparis'];
 
 // instantiate the selectors
 const selectShow = document.querySelector('#show-select');
@@ -19,6 +19,8 @@ const spanp50 = document.querySelector('#p50');
 const spanp90 = document.querySelector('#p90');
 const spanp95 = document.querySelector('#p95');
 const spanLastRelease=document.querySelector('#last-release');
+const selectFavs=document.querySelector('#favorites');
+
 selectSort.innerHTML="<option value='choose' selected> Choose here</option>"+selectSort.innerHTML
 /**
  * Set global value
@@ -60,6 +62,7 @@ const fetchProducts = async (page = 1, size = 12) => {
  * @param  {Array} products
  */
 const renderProducts = products => {
+  var x=0
   const fragment = document.createDocumentFragment();
   const div = document.createElement('div');
   const template = products
@@ -69,8 +72,12 @@ const renderProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.link}" target="_blank">${product.name}</a>
         <span>${product.price}</span>
+        <button type="button" onclick="addToFavs()" data=${product.uuid}>❤️</button>
+  </i>
+</label>
       </div>
     `;
+    x=x+1
     })
     .join('');
 
@@ -227,16 +234,21 @@ const render = (products, pagination) => {
        const products = await   fetchProducts(currentPagination.currentPage,currentPagination.pageCount)
        if(event.target.value=="Recently released"){
        products.result =products.result.filter(function(item,idx){return new Date(today).getTime()-new Date(item.released).getTime()<=12096e5});
+        setCurrentProducts(products)
 
      }
        else if (event.target.value=="Reasonable price") {
 
 
          products.result=products.result.filter(function(item,idx){return item.price<=50});
+          setCurrentProducts(products)
 
        }
-
-       setCurrentProducts(products)
+       else if(event.target.value=="See favorites"){
+         const products = await fetchProducts(1,139)
+          setCurrentProducts(products)
+          const currentProducts = currentProducts.filter(product => product.favorite == true)
+         }
        render(currentProducts, currentPagination);
 
       });
@@ -276,3 +288,36 @@ selectSort.addEventListener('change', async(event) => {
       setCurrentProducts(products)
       render(currentProducts, currentPagination)
 });
+
+
+//FAvorite Products
+
+async function addToFavs() {
+  let arg1 = event.target.getAttribute('data');
+  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+  let fav= products.result.find(x=>x.uuid==arg1)
+  let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+  console.log(favorites.length)
+  let prod=favorites.find(object => object.uuid == arg1);
+  if(prod== undefined)
+  {
+    favorites.push(fav);
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    window.alert("Added to favorites")
+  }
+  else{
+    window.alert("Product already added to favorites")
+  }
+
+}
+
+
+//Render favorites
+
+async function renderFav(){
+    const products=await fetchProducts(currentPagination.currentPage, currentPagination.pageSize)
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    products.result = favorites;
+    setCurrentProducts(products);
+    render(currentProducts, currentPagination);
+}
