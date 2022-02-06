@@ -1,1 +1,60 @@
+h1 {font-family: "Montserrat", sans-serif;
+font-size: 50px;
+width: 100%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8edeb
+}
 
+.options{
+  font-family: "Montserrat", sans-serif;
+  background-color: #d8e2dc;
+  display: flex;
+  align-items: stretch;
+
+}
+
+/* .show {
+   font-family: "Montserrat", sans-serif;
+   font-size: 17px;
+  width: 50px;
+  height: 50px;
+
+}
+.page {
+   font-family: "Montserrat", sans-serif;
+   font-size: 17px;
+  width: 100px;
+  height: 50px;
+
+} */
+.indicators{
+  font-family: "Montserrat", sans-serif;
+}
+
+.nbProducts{
+  font-weight: bold;
+}
+
+.nbNewProducts{
+  font-weight: bold;
+}
+.p50{
+  font-weight: bold;
+}
+.p90{
+  font-weight: bold;
+}
+.p95{
+  font-weight: bold;
+}
+.last-release{
+  font-weight: bold;
+}
+
+.products{
+  font-family: "Montserrat", sans-serif;
+  background-color: #f4f3ee;
+}

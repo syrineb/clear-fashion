@@ -70,9 +70,12 @@ const renderProducts = products => {
       return `
       <div class="product" id=${product.uuid}>
         <span>${product.brand}</span>
+        <style>
+    a { color: #0b090a;font-weight: bold; } /* CSS link color */
+    </style>
         <a href="${product.link}" target="_blank">${product.name}</a>
         <span>${product.price}</span>
-        <button type="button" onclick="addToFavs()" data=${product.uuid}>❤️</button>
+        <button type="button" onclick="addToFavs()" data=${product.uuid}>🖤</button>
   </i>
 </label>
       </div>
