@@ -4,7 +4,8 @@ const montlimart=require('./sources/montlimart');
 const adresse=require('./sources/adresse');
 const fs = require('fs').promises;
 
-
+//Missing pages in adresse and dedicatedbrand
+//null prices
 
 async function sandbox () {
   try {
