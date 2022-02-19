@@ -9,7 +9,9 @@ const cheerio = require('cheerio');
 const parse = data => {
   const $ = cheerio.load(data);
 
-  return $('.productList-container .productList')
+  const numberPage=Math.ceil(parseInt($('.paging-showing .js-allItems-total').text())/parseInt($('.paging-showing .js-items-current').text()))
+
+  return [$('.productList-container .productList')
     .map((i, element) => {
       const brand='DEDICATED.';
       const name = $(element)
@@ -25,8 +27,9 @@ const parse = data => {
 
       return {brand,name, price};
     })
-    .get();
+  .get(),numberPage]
 };
+
 
 /**
  * Scrape all the products for a given url page
@@ -39,8 +42,29 @@ module.exports.scrape = async url => {
 
     if (response.ok) {
       const body = await response.text();
+      const nbPages=parse(body)[1];
+      let allProducts=[];
 
-      return parse(body);
+      for(let i=1;i<=nbPages;i++)
+      {
+        const link=url+"#page="+i.toString()
+        try {
+                   const response2 = await fetch(link);
+
+                   if (response2.ok) {
+                       const body2 = await response2.text();
+                       allProducts = allProducts.concat(parse(body2)[0]);
+                   } else {
+                       console.error(response2);
+                       return null
+                   }
+               } catch (error) {
+                   console.error(error);
+                   return null;
+               }
+
+      }
+      return allProducts;
     }
 
     console.error(response);
