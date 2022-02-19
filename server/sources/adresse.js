@@ -41,7 +41,6 @@ module.exports.scrape = async url => {
 
     if (response.ok) {
       const body = await response.text();
-
       return parse(body);
     }
 

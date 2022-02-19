@@ -26,7 +26,10 @@ async function sandbox () {
     //ADRESSE PARIS
     eshop="https://adresse.paris/630-toute-la-collection"
     console.log(`🕵️‍♀️  browsing ${eshop} source`);
-    const productsAdresse = await adresse.scrape(eshop);
+    let productsAdresse = await adresse.scrape(eshop);
+    eshop="https://adresse.paris/630-toute-la-collection?p=2"
+    let productsAdresse2 = await adresse.scrape(eshop);
+    productsAdresse=productsAdresse.concat(productsAdresse2)
     console.log('number of products from Adresse Paris :'+productsAdresse.length.toString())
 
 
