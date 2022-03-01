@@ -22,7 +22,7 @@ const parse = data => {
           .find('span.price')
           .text()
       );
-
+      
       return {brand,name, price};
     })
     .get();

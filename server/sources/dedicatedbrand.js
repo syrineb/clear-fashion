@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
-
+const { 'v5': uuidv5 } = require('uuid');
 /**
  * Parse webpage e-shop
  * @param  {String} data - html response
@@ -19,13 +19,17 @@ const parse = data => {
         .text()
         .trim()
         .replace(/\s/g, ' ');
+      const link=$(element).find('.productList-link').attr('href');
+      const image=$(element) .find('.productList-image img').attr('data-src')
+      const id=$(element) .find('.js-saveToFavorites productList-favorites').attr('data-id')
+
       const price = parseInt(
         $(element)
           .find('.productList-price')
           .text()
       );
 
-      return {brand,name, price};
+      return {brand,link,id,image,name, price};
     })
   .get(),numberPage]
 };

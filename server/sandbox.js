@@ -4,7 +4,7 @@ const montlimart=require('./sources/montlimart');
 const adresse=require('./sources/adresse');
 const fs = require('fs').promises;
 
-//Missing pages in adresse and dedicatedbrand
+
 //null prices
 //duplicates
 
@@ -14,7 +14,7 @@ async function sandbox () {
     //DEDICATED BRAND
     let eshop = 'https://www.dedicatedbrand.com/en/men/all-men'
     console.log(`🕵️‍♀️  browsing ${eshop} source`);
-    const productsDedicated = await dedicatedbrand.scrape(eshop);
+    let  productsDedicated = await dedicatedbrand.scrape(eshop);
     console.log('number of products from DEDICATED :'+productsDedicated.length.toString())
 
     //MONTLIMART
@@ -39,10 +39,12 @@ async function sandbox () {
     //const finalProducts=products.filter(x=>x.price!=null)
     //var filtered = products.filter(function(ele){return ele.price != null;});
 
-    //var filtered =[]
-    // products.forEach(function(x){
-    //   if(x.price!='null'){filtered.push(x)}
-    // console.log(x.price)})
+    var filtered =[]
+    products.forEach(function(x){
+      if(x.price!==null){
+        //filtered.push(x)
+        console.log(x.price)
+      }})
 
     await fs.writeFile('all_products.json', JSON.stringify(products),function (err)
     {
