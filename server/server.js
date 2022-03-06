@@ -85,7 +85,7 @@ async function sortedByPrice(){
 }
 
 
-//FIND ALL PRODUCTS SORTED BY DATE
+//FIND ALL PRODUCTS SORTED BY DATE (not tested)
 async function sortedByDate(){
   await client.connect();
   const db = client.db(MONGODB_DB_NAME);
@@ -96,6 +96,17 @@ async function sortedByDate(){
   await client.close()
 }
 
+
+//FIND ALL PRODUCTS SCRAPED LESS THAN 2 WEEKS (not tested)
+async function sortedByDate(){
+  await client.connect();
+  const db = client.db(MONGODB_DB_NAME);
+  const collection = db.collection('products')
+  let products = await collection.find().toArray();
+  console.log(products);
+  products =products.filter(function(item,idx){return new Date(today).getTime()-new Date(item.released).getTime()<=12096e5});
+  await client.close()
+}
 
 
 
