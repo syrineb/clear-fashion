@@ -73,10 +73,20 @@ async function lessThanPrice(){
   await client.close()
 }
 
-
+//FIND ALL PRODUCTS SORTED BY PRICE
+async function sortedByPrice(){
+  await client.connect();
+  const db = client.db(MONGODB_DB_NAME);
+  const collection = db.collection('products')
+  let products = await collection.find().toArray();
+  console.log(products);
+  products=products.sort(function(a,b){return a.price-b.price})
+  await client.close()
+}
 
 //sortByBrand();
-lessThanPrice();
+//lessThanPrice();
+sortedByPrice();
 // clearCollection()
 // insertData();
 
