@@ -84,9 +84,24 @@ async function sortedByPrice(){
   await client.close()
 }
 
+
+//FIND ALL PRODUCTS SORTED BY DATE
+async function sortedByDate(){
+  await client.connect();
+  const db = client.db(MONGODB_DB_NAME);
+  const collection = db.collection('products')
+  let products = await collection.find().toArray();
+  console.log(products);
+  products=products.sort(function(a,b){return Date(a.released)-Date(b.released)})
+  await client.close()
+}
+
+
+
+
 //sortByBrand();
 //lessThanPrice();
-sortedByPrice();
+//sortedByPrice();
 // clearCollection()
 // insertData();
 
