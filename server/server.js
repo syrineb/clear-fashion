@@ -1,5 +1,7 @@
 const {MongoClient} = require('mongodb');
-const MONGODB_URI = 'mongodb+srv://clearfashion:clearfashion3210@clearfashion.6ubr1.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+require('dotenv').config()
+console.log(process.env.MONGODB_URI)
+var MONGODB_URI = process.env.MONGODB_URI
 const MONGODB_DB_NAME = 'clearfashion';
 const client = new MongoClient(MONGODB_URI, {'useNewUrlParser': true});
 const products = require('./all_products.json')
@@ -16,6 +18,8 @@ async function main() {
   const db = client.db(MONGODB_DB_NAME);
   return 'done.';
 }
+
+
 
 async function clearCollection(){
   try{
@@ -47,6 +51,11 @@ async function insertData(){
     await client.close()
   }
 }
+
+
+
+
+
 //FIND ALL PRODUCT RELATED TO A GIVEN brand
 async function sortByBrand(){
   await client.connect();
@@ -109,15 +118,13 @@ async function sortedByDate(){
 }
 
 
+main()
+  .then(console.log)
+  .catch(console.error)
+
 
 //sortByBrand();
 //lessThanPrice();
 //sortedByPrice();
-// clearCollection()
+//clearCollection()
 // insertData();
-
-// main()
-//   .then(console.log)
-//   .catch(console.error)
-//   .then(insertData())
-//   .finally(() => client.close());
