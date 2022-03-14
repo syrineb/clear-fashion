@@ -1,55 +1,43 @@
 const {MongoClient} = require('mongodb');
 require('dotenv').config()
-console.log(process.env.MONGODB_URI)
 var MONGODB_URI = process.env.MONGODB_URI
 const MONGODB_DB_NAME = 'clearfashion';
-const client = new MongoClient(MONGODB_URI, {'useNewUrlParser': true});
 const products = require('./all_products.json')
-const readline = require('readline').createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+let db;
+let collection=null;
 
-
-async function main() {
-
-  await client.connect();
-  console.log('Connected successfully to server');
-  const db = client.db(MONGODB_DB_NAME);
-  return 'done.';
+const connect = async()=>{
+  try{
+    const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
+     db=client.db(MONGODB_DB_NAME)
+    console.log('Connected successfully to server');
+  }
+  catch(error){console.error(error)}
 }
 
 
 
-async function clearCollection(){
+const clearCollection = async()=> {
   try{
-    await client.connect();
-    const db = client.db(MONGODB_DB_NAME);
-    const collection = db.collection('products')
-    const result = await collection.deleteMany({});
+    await connect()
+    collection = db.collection('products')
+    const result = collection.deleteMany({});
     console.log(`collection products from ${MONGODB_DB_NAME} is cleared`)
     console.log(result)
   }
   catch(error){console.log(error)}
-  finally{
-    await client.close()
-  }
 }
 
 
-async function insertData(){
+const insertData= async()=>{
   try{
-    await client.connect();
-    const db = client.db(MONGODB_DB_NAME);
-    const collection = db.collection('products')
-    const result = await collection.insertMany(products)
+    await connect();
+    collection = db.collection('products')
+    const result = collection.insertMany(products)
     console.log(`data were added to collection products of database ${MONGODB_DB_NAME}`)
     console.log(result)
   }
   catch(error){console.log(error)}
-  finally{
-    await client.close()
-  }
 }
 
 
@@ -57,74 +45,61 @@ async function insertData(){
 
 
 //FIND ALL PRODUCT RELATED TO A GIVEN brand
-async function sortByBrand(){
-  await client.connect();
-  const db = client.db(MONGODB_DB_NAME);
-  const collection = db.collection('products')
-  readline.question('Which brand?   ', brand => {
-  console.log(brand);
-  readline.close();});
-  const products = await collection.find({brand}).toArray();
-  console.log(products);
-  await client.close()
+const sortByBrand = async(brand)=>{
+  await connect();
+
+  collection = db.collection('products')
+  const results = await collection.find({brand:brand}).toArray();
+  console.log(results);
 }
 
 //FIND ALL PRODUCTS LESS THAN A PRICE
-async function lessThanPrice(){
-  await client.connect();
-  const db = client.db(MONGODB_DB_NAME);
-  const collection = db.collection('products')
-  readline.question('Which price?   ', price => {
-  console.log(price);
-  readline.close();});
+const lessThanPrice = async(price)=>{
+  await connect();
+
+  collection = db.collection('products')
   const products = await collection.find({'price':{$lt:price}}).toArray();
   console.log(products);
-  await client.close()
 }
 
 //FIND ALL PRODUCTS SORTED BY PRICE
-async function sortedByPrice(){
-  await client.connect();
-  const db = client.db(MONGODB_DB_NAME);
-  const collection = db.collection('products')
+const sortedByPrice = async()=>{
+  await connect();
+
+  collection = db.collection('products')
   let products = await collection.find().toArray();
-  console.log(products);
   products=products.sort(function(a,b){return a.price-b.price})
-  await client.close()
+  console.log(products);
 }
 
 
-//FIND ALL PRODUCTS SORTED BY DATE (not tested)
+//FIND ALL PRODUCTS SORTED BY DATE
 async function sortedByDate(){
-  await client.connect();
-  const db = client.db(MONGODB_DB_NAME);
-  const collection = db.collection('products')
+  await connect();
+
+  collection = db.collection('products')
   let products = await collection.find().toArray();
-  console.log(products);
   products=products.sort(function(a,b){return Date(a.released)-Date(b.released)})
-  await client.close()
-}
-
-
-//FIND ALL PRODUCTS SCRAPED LESS THAN 2 WEEKS (not tested)
-async function sortedByDate(){
-  await client.connect();
-  const db = client.db(MONGODB_DB_NAME);
-  const collection = db.collection('products')
-  let products = await collection.find().toArray();
   console.log(products);
-  products =products.filter(function(item,idx){return new Date(today).getTime()-new Date(item.released).getTime()<=12096e5});
-  await client.close()
 }
 
 
-main()
-  .then(console.log)
-  .catch(console.error)
+//FIND ALL PRODUCTS SCRAPED LESS THAN 2 WEEKS
+async function scrapedLessThan2Weeks(){
+  await connect();
+
+  collection = db.collection('products')
+  let products = await collection.find().toArray();
+  products =products.filter(function(item,idx){return new Date(today).getTime()-new Date(item.released).getTime()<=12096e5});
+  console.log(products);
+}
 
 
-//sortByBrand();
-//lessThanPrice();
-//sortedByPrice();
-//clearCollection()
-// insertData();
+//Connection();
+// clearCollection();
+//insertData();
+//sortByBrand('DEDICATED.')
+// lessThanPrice(50);
+// sortedByPrice();
+//sortedByDate();
+scrapedLessThan2Weeks()
