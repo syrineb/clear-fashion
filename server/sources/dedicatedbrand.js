@@ -11,9 +11,9 @@ const parse = data => {
 
   const numberPage=Math.ceil(parseInt($('.paging-showing .js-allItems-total').text())/parseInt($('.paging-showing .js-items-current').text()))
 
-  return [$('.productList-container .productList')
+  return $('.productList-container .productList')
     .map((i, element) => {
-      const brand='DEDICATED.';
+      const brand='DEDICATED';
       const name = $(element)
         .find('.productList-title')
         .text()
@@ -21,17 +21,17 @@ const parse = data => {
         .replace(/\s/g, ' ');
       const link=$(element).find('.productList-link').attr('href');
       const image=$(element) .find('.productList-image img').attr('data-src')
-      const id=$(element) .find('.js-saveToFavorites productList-favorites').attr('data-id')
-
+      const id=uuidv5(link, uuidv5.URL)
+      const released = new Date();
       const price = parseInt(
         $(element)
           .find('.productList-price')
           .text()
       );
 
-      return {brand,link,id,image,name, price};
+      return {brand,link,id,image,name, price,released};
     })
-  .get(),numberPage]
+  .get()
 };
 
 
@@ -41,41 +41,20 @@ const parse = data => {
  * @return {Array|null}
  */
 module.exports.scrape = async url => {
-  try {
-    const response = await fetch(url);
+ try {
+   const response = await fetch(url);
 
-    if (response.ok) {
-      const body = await response.text();
-      const nbPages=parse(body)[1];
-      let allProducts=[];
+   if (response.ok) {
+     const body = await response.text();
 
-      for(let i=1;i<=nbPages;i++)
-      {
-        const link=url+"#page="+i.toString()
-        try {
-                   const response2 = await fetch(link);
+     return parse(body);
+   }
 
-                   if (response2.ok) {
-                       const body2 = await response2.text();
-                       allProducts = allProducts.concat(parse(body2)[0]);
-                   } else {
-                       console.error(response2);
-                       return null
-                   }
-               } catch (error) {
-                   console.error(error);
-                   return null;
-               }
+   console.error(response);
 
-      }
-      return allProducts;
-    }
-
-    console.error(response);
-
-    return null;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
+   return null;
+ } catch (error) {
+   console.error(error);
+   return null;
+ }
 };

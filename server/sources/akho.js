@@ -10,28 +10,30 @@ const {'v5': uuidv5} = require('uuid');
 const parse = data => {
   const $ = cheerio.load(data, {'xmlMode': true});
 
-  return $('.product-grid__item')
+  return $('.ProductgridContainer .product-grid')
     .map((i, element) => {
-      const link = `https://www.loom.fr${$(element)
-        .find('.product-title a')
+      const link = `https://www.akhoparis.com/${$(element)
+        .find('.card-wrapper group .card card--product .card_inner a')
         .attr('href')}`;
 
       return {
-        'brand': 'loom',
+        'brand': 'akho',
         link,
         'id': uuidv5(link, uuidv5.URL),
         'image': $(element)
-          .find('noscript img.product_card__image')
-          .attr('src'),
+          .find('.media media--transparent media--portrait media--hover-effect img')
+          .attr('srcset'),
         'name': $(element)
-          .find('.product-title')
+          .find('.h3 .card-information__text h5 !p-0 full-unstyled-link')
           .text()
           .trim()
           .replace(/\s/g, ' '),
-        'price': parseInt(
+        'price': parseFloat(
           $(element)
-            .find('.money')
+            .find('.price-item price-item--sale price-item--last')
             .text()
+            .replace('', ' €')
+            .replace('.', ',')
         ),
         'released' : new Date()
       };

@@ -2,6 +2,8 @@
 const dedicatedbrand = require('./sources/dedicatedbrand');
 const montlimart=require('./sources/montlimart');
 const adresse=require('./sources/adresse');
+const loom=require('./sites/loom');
+const akho=require('./sources/akho');
 const fs = require('fs').promises;
 
 
@@ -11,8 +13,8 @@ const fs = require('fs').promises;
 async function sandbox () {
   try {
 
-    //DEDICATED BRAND
-    let eshop = 'https://www.dedicatedbrand.com/en/men/all-men'
+    // DEDICATED BRAND
+    let eshop = 'https://www.dedicatedbrand.com/en/men/all-men?limit=all'
     console.log(`🕵️‍♀️  browsing ${eshop} source`);
     let  productsDedicated = await dedicatedbrand.scrape(eshop);
     console.log('number of products from DEDICATED :'+productsDedicated.length.toString())
@@ -33,25 +35,26 @@ async function sandbox () {
     console.log('number of products from Adresse Paris :'+productsAdresse.length.toString())
 
 
-    //WRITE IN JSON FILE
+    //loom
+    eshop="https://www.loom.fr/collections/tous-les-vetements"
+    console.log(`🕵️‍♀️  browsing ${eshop} source`);
+    let productsLoom = await loom.scrape(eshop);
+    console.log('number of products from Loom :'+productsLoom.length.toString())
 
-    const products =productsDedicated.concat(productsMontlimart,productsAdresse)
-    //const finalProducts=products.filter(x=>x.price!=null)
-    //var filtered = products.filter(function(ele){return ele.price != null;});
+    //AKHO
+    eshop="https://www.akhoparis.com/collections/all"
+    console.log(`🕵️‍♀️  browsing ${eshop} source`);
+    let productsAkho = await akho.scrape(eshop);
+    console.log('number of products from Akho :'+productsAkho.length.toString())
 
-    var filtered =[]
-    products.forEach(function(x){
-      if(x.price!==null){
-        //filtered.push(x)
-        console.log(x.price)
-      }})
+    //
+    // //WRITE IN JSON FILE
 
-    await fs.writeFile('all_products.json', JSON.stringify(products),function (err)
-    {
-      if (err) return console.log(err);
-    })
+    const products =productsDedicated.concat(productsMontlimart,productsAdresse,productsLoom,productsAkho)
 
-    //console.log(filtered);
+    await fs.writeFile('all_products.json', JSON.stringify(products),function (err){ if (err) return console.log(err);})
+    console.log(products)
+
     console.log('done');
     console.log('TOTAL NUMBER OF PRODUCTS :'+products.length.toString())
     process.exit(0);
