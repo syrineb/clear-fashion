@@ -96,10 +96,10 @@ async function scrapedLessThan2Weeks(){
 
 
 //Connection();
-// clearCollection();
-//insertData();
+clearCollection();
+insertData();
 //sortByBrand('DEDICATED.')
 // lessThanPrice(50);
 // sortedByPrice();
 //sortedByDate();
-scrapedLessThan2Weeks()
+// scrapedLessThan2Weeks()
