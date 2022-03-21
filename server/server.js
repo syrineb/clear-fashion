@@ -95,9 +95,9 @@ async function scrapedLessThan2Weeks(){
 }
 
 
-//Connection();
-clearCollection();
-insertData();
+connect();
+// clearCollection();
+// insertData();
 //sortByBrand('DEDICATED.')
 // lessThanPrice(50);
 // sortedByPrice();

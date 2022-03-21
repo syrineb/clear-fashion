@@ -1,6 +1,8 @@
 const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
+const url = require('url');
+const querystring = require('querystring');
 
 const PORT = 8092;
 
@@ -42,12 +44,35 @@ app.get('/', async (request, response) => {
   response.send({'ack': true});
 });
 
+
+app.get('/products/search', async (request, response)=>{
+  const rawUrl=request.url;
+  let parsedUrl = url.parse(rawUrl);
+  let parsedQs = querystring.parse(parsedUrl.query);
+  const obj = JSON.parse(JSON.stringify(parsedQs));
+  let mySearch=results;
+  let limit=0;
+  for (const key in obj) {
+      if(key=='brand'){mySearch=mySearch.filter(x=>x.brand==obj[key])}
+      else if (key=='price') {mySearch=mySearch.filter(x=>x.brand<=obj[key])}
+      else if (key=='limit'){limit=obj[key]}
+    }
+  if(limit!=0){mySearch=mySearch.slice(0,limit)}
+  response.send(mySearch);
+});
 //ENDPOINT 'GET /products/:id'
 app.get('/products/:id',async (request,response)=>{
    const res = results.find(x=>x._id==request.params.id)
    response.send(res)
-})
+});
 
+
+
+
+
+app.get('/products',async (request,response)=>{
+   response.send(results)
+});
 
 app.listen(PORT);
 
