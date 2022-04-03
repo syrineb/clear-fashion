@@ -4,7 +4,7 @@
 // current products on the page
 let currentProducts = [];
 let currentPagination = {};
-let all_brand = ['All','loom','adresse','1083','dedicated','coteleparis'];
+let all_brand = ['All','loom','Akho','ADRESSE Paris','DEDICATED','Montlimart'];
 
 // instantiate the selectors
 const selectShow = document.querySelector('#show-select');
@@ -41,7 +41,7 @@ const setCurrentProducts = ({result, meta}) => {
 const fetchProducts = async (page = 1, size = 12) => {
   try {
     const response = await fetch(
-      `https://clear-fashion-api.vercel.app?page=${page}&size=${size}`
+      `https://server-eight-chi.vercel.app/products/search?page=${page}&size=${size}`,{ headers: {origin: null} }
     );
     const body = await response.json();
 
@@ -68,14 +68,16 @@ const renderProducts = products => {
   const template = products
     .map(product => {
       return `
-      <div class="product" id=${product.uuid}>
+      <div class="product" id=${product._id}>
+      <img src="${product.image}" width="250px" alt="this slowpoke moves"/>
         <span>${product.brand}</span>
+
         <style>
     a { color: #0b090a;font-weight: bold; } /* CSS link color */
     </style>
         <a href="${product.link}" target="_blank">${product.name}</a>
         <span>${product.price}</span>
-        <button type="button" onclick="addToFavs()" data=${product.uuid}>🖤</button>
+        <button type="button" onclick="addToFavs()" data=${product._id}>🖤</button>
   </i>
 </label>
       </div>
@@ -99,7 +101,7 @@ function percentiles(products,p){
 }
 
 const renderPercentile = async (pagination) => {
-  const products = await fetch(  `https://clear-fashion-api.vercel.app?page=${1}&size=${139}`);
+  const products = await fetch(  `https://server-eight-chi.vercel.app/products/search?page=${1}&size=${139}`);
   const body= await products.json()
 
     spanp50.innerHTML=percentiles(body.data.result,50)
@@ -178,6 +180,13 @@ const render = (products, pagination) => {
 /**
  * Declaration of all Listeners
  */
+ document.addEventListener('DOMContentLoaded', async () => {
+
+   const products = await fetchProducts();
+
+   setCurrentProducts(products);
+   render(currentProducts, currentPagination);
+ });
 
 /**
  * Select the number of products to display
@@ -187,13 +196,6 @@ const render = (products, pagination) => {
      setCurrentProducts(products)
       render(currentProducts, currentPagination);
 
-  });
-  document.addEventListener('DOMContentLoaded', async () => {
-
-    const products = await fetchProducts();
-
-    setCurrentProducts(products);
-    render(currentProducts, currentPagination);
   });
 
   /**
@@ -298,10 +300,10 @@ selectSort.addEventListener('change', async(event) => {
 async function addToFavs() {
   let arg1 = event.target.getAttribute('data');
   const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
-  let fav= products.result.find(x=>x.uuid==arg1)
+  let fav= products.result.find(x=>x._id==arg1)
   let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
   console.log(favorites.length)
-  let prod=favorites.find(object => object.uuid == arg1);
+  let prod=favorites.find(object => object._id == arg1);
   if(prod== undefined)
   {
     favorites.push(fav);

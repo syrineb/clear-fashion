@@ -19,7 +19,7 @@ const parse = data => {
         .text()
         .trim()
         .replace(/\s/g, ' ');
-      const link=$(element).find('.productList-link').attr('href');
+      const link='https://www.dedicatedbrand.com'+$(element).find('.productList-link').attr('href');
       const image=$(element) .find('.productList-image img').attr('data-src')
       const id=uuidv5(link, uuidv5.URL)
       const released = new Date();
